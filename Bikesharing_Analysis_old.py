@@ -160,7 +160,7 @@ def partii_page():
     
     with tab2:
         
-        st.subheader("Categorical Features")
+        st.subheader("Categorical Variables")
 
         # Descriptive stats of categorical columns
         categorical_cols = df[["Weekday", "Season", "Year", "Is_Holiday","Weather_Condition","Is_Working_Day"]]
@@ -203,7 +203,7 @@ def partii_page():
 
     with tab3:
         
-        st.subheader("Numerical Features")
+        st.subheader("Numerical Variables")
         # Descriptive stats of numerical columns
         numerical_cols = df[["Temperature", "Air_Temperature", "Humidity", "Windspeed", "Casual_Users", "Registered_Users", "Month", "Hour",]]
 
@@ -266,7 +266,7 @@ def partiii_page():
 
     with tab1: 
         
-        st.write("Select a date range and time dimension to analyze the distribution of bike users over time.")
+        st.write("Select a time dimension to analyze the distribution of bike users along this time dimension.")
 
         # add calendar for start and end dates
         date_col_1, date_col_2 = st.columns(2)
@@ -332,9 +332,10 @@ def partiii_page():
 
     with tab2:
         
-        st.subheader("Categorical Features Analysis")
-        
         st.write("Select a categorical feature to analyze the distribution of bike users against the selected feature.")
+
+        # plot categorical features by type of user
+        st.subheader("Categorical Features Analysis")
 
         # define function to plot bar plot of categorical variables by number of registered and casual users
         def plot_grouped_data(partiii_df, groupby_col, data_col1, data_col2):
@@ -386,11 +387,10 @@ def partiii_page():
 
     with tab3:
     
-        st.subheader("Numerical Features Analysis")
-        
         st.write("Select a numerical feature to analyze the distribution of bike users against the selected feature.")
-        
         # define function to plot numerical variables by number of registered and casual users
+        st.subheader("Numerical Features Analysis")
+
         def plot_grouped_data(partiii_df, groupby_col, data_col1, data_col2):
             grouped = partiii_df.groupby(groupby_col).sum().reset_index()
 
@@ -434,8 +434,9 @@ def partiii_page():
         st.markdown("<h5 style='text-align: left;'>1. Optimize bike availability</h5>", unsafe_allow_html=True)
         st.markdown('''
         Bike sharing services are designed to provide users with a convenient and flexible mode of transportation. If there aren't enough bikes available for users when they need them, it can lead to frustration and dissatisfaction with the service. Some ways to optimize bike availability are:
-        - If data on the location of each bike station were provided, the service would be able to regularly redistribute bikes from low-demand areas to high-demand areas to ensure that there are always bikes available where users need them.
+        - Regularly redistribute bikes from low-demand areas to high-demand areas to ensure that there are always bikes available where users need them.
         - Increase the number of bikes available during peak usage times, such as rush hour (mornings around 8am and afternoons 5pm), to meet demand.
+
         ''')
         st.markdown("<h5 style='text-align: left;'>2. Use dynamic pricing/incentives</h5>", unsafe_allow_html=True)
         st.markdown('''
@@ -500,16 +501,16 @@ def partiv_page():
     
         # train test split
         st.subheader("Train Test Split")
-        st.write("We sorted the dataset in ascending order by date and used a time series split to create a train (first 80% of data), a validation set (next 10% of data) and a test set (final 10% of data). You can find the code to do this below.")
+        st.write("We sorted the dataset in ascending order by date and used a time series split to create a train (first 70% of data), a validation set (next 15% of data) and a test set (final 15% of data). You can find the code to do this below.")
 
         # display code used for train test split
         st.code('''
         from sklearn.model_selection import train_test_split
 
         # establish proportions for each set
-        training_proportion = 0.80  # 80% for training
-        validation_proportion = 0.10  # 10% for validation
-        test_proportion = 0.10  # 10% for testing
+        training_proportion = 0.70  # 70% for training
+        validation_proportion = 0.15  # 15% for validation
+        test_proportion = 0.15  # 15% for testing
 
         # create training and test sets
         X_train_and_val, X_test, y_train_and_val, y_test = train_test_split(x_df, y_df, test_size=test_proportion, shuffle=False)
@@ -535,7 +536,7 @@ def partiv_page():
         ''')
 
         # return datasets from pre-processing
-        X_train, y_train, X_test, y_test, X_train_processed, X_test_processed, test_dates = preprocess()
+        X_train, y_train, X_test, y_test, X_train_processed, X_test_processed, train_dates, test_dates = preprocess()
     
     
     with tab3:
@@ -547,37 +548,37 @@ def partiv_page():
         st.markdown('''
         We attempted the following models:
         - Linear Regression
-        - K Nearest Neighbors
-        - Decision Tree
-        - Random Forest
         - Elastic Net
+        - Decision Tree
+        - K Nearest Neighbors
+        - Random Forest
         - Gradient Boosting (final model)
         ''')
         st.write("To tune the hyperparameters for each of these models, we ran a grid search with k fold cross validation with 5 folds. We then trained the model with the best parameters found in the grid search on the entire training set and used it to predict the total number of bike rentals on the validation set. We then chose the model with the best performance on the train and validation set to use as our final model (gradient boosting). You can see the model performance on train and test sets for each of the models attempted below.")
 
         # model descriptions
-        chosen_model = st.selectbox("Choose a model", ["Linear Regression", "K Nearest Neighbors", "Decision Tree", "Random Forest", "Elastic Net", "Gradient Boosting"])
+        chosen_model = st.selectbox("Choose a model", ["Linear Regression", "Elastic Net", "Decision Tree", "K Nearest Neighbors", "Random Forest", "Gradient Boosting"])
 
         model_performance_description = ""
 
         if chosen_model == "Linear Regression":
             metrics, y_test_predictions = linreg_model(X_train_processed, y_train, X_test_processed, y_test)
-            model_performance_description = "Linear regression is a simple and interpretable model, but it may not capture complex nonlinear relationships in our data given the low scores obtained."
+            model_performance_description = "Linear regression provided reasonable performance and did not seem to overfit. however, we believed that other models would have better perforance potential."
         elif chosen_model == "Elastic Net":
             metrics, y_test_predictions = enet_model(X_train_processed, y_train, X_test_processed, y_test)
-            model_performance_description = "Elastic net was chosen to compare it's results to Random Forest's, given that both help reducing overfitting, it was important to compare how a regularized linear regression model performed vs a Desicion Tree model."
+            model_performance_description = "Elastic net had performed similarly to linear regression, so we sought other models that would provide better performance."
         elif chosen_model == "Decision Tree":
             metrics, y_test_predictions = dt_model(X_train, y_train, X_test, y_test)
-            model_performance_description = "Decision Tree was found to be overfitting on the training set before reducing the model's complexity. Next step was to find models that helped us reduce overfitting while maximizing the Test score."
+            model_performance_description = "Decision tree has slightly better performance than linear regression and elastic net and trhouggh regularization did not overfit a lot. However, we decided to try additional models."
         elif chosen_model == "K Nearest Neighbors":
             metrics, y_test_predictions = knn_model(X_train_processed, y_train, X_test_processed, y_test)
-            model_performance_description = "KNN was chosein since we identified some nonlinear relationships in our data and since it can handle both categorical and continuous predictors. One of the the cons we found was an even lower r2 score before reducing the features of our model."
+            model_performance_description = "KNN showed a lot of overfitting on the training set with perfect performance but was not able to generalize to the test set, so we discarded this model."
         elif chosen_model == "Random Forest":
             metrics, y_test_predictions = rf_model(X_train, y_train, X_test, y_test)
-            model_performance_description = "Given the overfitting present in the Decision Tree model before feature reduction, Random Forest was chosen since one of it's strengths is to reduce overfitting and improve generalization, recursive feature elimination CV was integrated to this model to help reduce overfitting even more and start to identify relevant variables. We found this model to be computationally expensive, since it took the longest to fit and the results we're not extraordinary."
+            model_performance_description = "Random forest provided better performance than all of the previous models attempted although it did show some overfitting on the training set. Given this attempt at using a bagging algorithm we then also wanted to try a boosting algorithm."
         elif chosen_model == "Gradient Boosting":
             metrics, y_test_predictions, feature_importance, sorted_idx, estimators, feature_names = gb_model(X_train, y_train, X_test, y_test)    
-        model_performance_description = "Given the low results achieved in the rest of the models, Gradient Boosting was chosen because of it's method of combining weak models to achieve a strong predictor. The model seems generalizes well also to new and unseen data, as seen in test and validation scores. RFECV was applied to the final model, which helped us to identify and remove the weakest features to optimize our model."
+        model_performance_description = "Despite showing some signs of overfitting on the training set, this model provides the highest overall performance on both train and test sets. We reduced overfitting to a minimum by introducing regularization into our model."
 
         st.write("Below we display the model performance on the train and test set as measured by multiple evaluation metrics and provide a brief description on each model.")
         
@@ -644,22 +645,10 @@ def partiv_page():
         # final model
         st.subheader("Final Model")
         st.markdown('''
-        As mentioned in the 'Models" tab, after trying various models, we decided to use **Gradient Boosting** as our final model as it provided the best performance (highest training and validation scores and less overfitting on the training data).
+        As mentioned in the 'Models" tab, after trying various models, we decided to use **Gradient Boosting** as our final model as it provided the best performance (highest training and validation scores and less overfitting on the training data). You can see performance metrics and a plot of actual vs predicted values below.
         ''')
 
-        st.markdown('''
-        For this final model, we used Revursive Feature Elimination (RFECV), to select features based on feature importance. The following features were excluded from the model given the results of RFECV and feature importances: 
-        - `mnth_start` 
-        - `mnth_end` 
-        - `quarter` 
-        - `ytd_mean_daily_temp` 
-        - `ytd_mean_daily_hum` 
-        - `ytd_min_daily_temp` 
-        - `ytd_min_daily_hum`
-        - `windspeed`
-        - `is_night`
-        
-        The code used for the RFECV can be found below.
+        st.markdown('''For our final model, we used Revursive Feature Elimination (RFECV), to select features based on feature importance. The following features were excluded from the model given the results of RFECV and feature importances: `mnth_start` `mnth_end` `quarter` `ytd_mean_daily_temp` `ytd_mean_daily_hum` `ytd_min_daily_temp` `ytd_min_daily_hum`. The code used for the RFECV can be found below.
         ''')
         
         st.code('''
@@ -680,7 +669,7 @@ def partiv_page():
         max_features = None, # maximum features to consider when looking for best split
         min_samples_leaf = 1, # minimum samples required to be at a leaf node
         min_samples_split = 7, # minimum number of samples required to split an internal node
-        alpha = 0.1, # regularization parameter
+        ccp_alpha = 0.2, # regularization parameter
         n_estimators = 150 # number of boosting stages
         )
         ''')
@@ -709,41 +698,19 @@ def partiv_page():
         )
         fig.update_layout(xaxis=dict(showgrid=False), yaxis=dict(showgrid=False, range=[0, None]), height=400)
         st.plotly_chart(fig, use_container_width=True)
-        st.caption("`is_rush_hour` was the most important feature in the model, followed by `day_period` and then the cosine of the hour `cos_hour`")
 
-        #plot model predictions vs residuals
-        st.write("Below you can find a plots showing the relationship between predicted values and actual values (left) as well as predicted values and their residuals (right).")
-            
-        col_1, col_2 = st.columns(2)
-        
-        with col_1:
-            #plot model predictions vs residuals
-            residuals = y_test - y_test_predictions
-            residuals_df = pd.DataFrame({'predicted': y_test_predictions, 
-                                         'residuals': residuals,
-                                         'actual': y_test})
+        # call gb_model function to get feature_importance
+        metrics_gb, y_test_predictions, feature_importance, sorted_idx, estimators, feature_names = gb_model(X_train_processed, y_train, X_test_processed, y_test)
 
-            fig = px.scatter(residuals_df, x='predicted', y='residuals', title='Predictions vs. Residuals')
-            fig.update_layout(xaxis=dict(showgrid=False), yaxis=dict(showgrid=False))
-            st.plotly_chart(fig, use_container_width=True)
-            st.caption("Residuals do not appear entirely normally distributed but are centered around 0 with some outliers.")
-        
-        with col_2:
-            #plot model predictions vs actual
-            fig = px.scatter(residuals_df, x='predicted', y='actual', title='Predictions vs. Actual')
-            fig.update_layout(xaxis=dict(showgrid=False), yaxis=dict(showgrid=False))
-            st.plotly_chart(fig, use_container_width=True)
-            st.caption("There is a strong positive linear relationship between actual and predicted values as expected given the high model performance")
-
-        # plot an example estimator
         st.write("You can see an example estimator from our model below.")
 
         st.set_option('deprecation.showPyplotGlobalUse', False)
+
         plt.figure(figsize=(90,20))
-        tree = plot_tree(estimators[2][0], filled=True, 
+        plot_tree(estimators[2][0], filled=True, 
         rounded=True, fontsize=30,feature_names=feature_names,
-        impurity=False, proportion=False, precision=0, node_ids=False, label=None, class_names=None, max_depth=None, ax=None)
-        
+        impurity=False, proportion=False, precision=0, node_ids=False, label=None, 
+        class_names=None, max_depth=None, ax=None)
         st.pyplot()
     
 ############### PART III ###############    
@@ -790,13 +757,13 @@ def partv_page():
     with col_3:
         mean_daily_hum = st.slider("Average Humidity", 0.0, 1.0, 0.5, step=0.01)
     with col_4:
-        st.write("")
-        
+        max_daily_hum = st.slider("Maximum Humidity", 0.0, 1.0, 0.5, step=0.01)
+    
     # windspeed and selection box for weather conditions inputs
     st.write("Weather Inputs")
     col_1, col_2, col_3, col_4 = st.columns(4)
     with col_1:
-        windspeed = st.slider("Windspeed", 0.0, 1.0, 0.1, step=0.01)
+        windspeed = st.slider("Windspeed", 0.0, 1.0, step=0.01)    
     with col_2:
         weather = st.selectbox("Weather conditions", ["Clear, Few clouds, Partly cloudy, Partly cloudy", "Mist + Cloudy, Mist + Broken clouds, Mist + Few clouds, Mist", "Light Snow, Light Rain + Thunderstorm + Scattered clouds, Light Rain + Scattered clouds", "Heavy Rain + Ice Pallets + Thunderstorm + Mist, Snow + Fog"]) 
     with col_3:
@@ -890,12 +857,17 @@ def partv_page():
     # define day_period
     if hour <=5:
         day_period = 1
+        if hour in [3, 4, 5]:
+            is_night = 1
     elif 6<= hour <= 11:
         day_period = 2
+        is_night = 0
     elif 12<= hour <= 17:
         day_period = 3
+        is_night = 0
     elif 18<= hour <= 23:
         day_period = 4
+        is_night = 0
         
     # recode selected rush hour status
     if hour in [8, 17, 18]:
@@ -910,29 +882,37 @@ def partv_page():
         yr = 0
         
     # create dataframe with selected values for each feature
-    input_x_test = pd.DataFrame(
-             {'atemp': atemp,
-              'cos_hour': cos_hour,
-              'cos_month': cos_month,
-              'cos_weekday': cos_weekday,
-              'day_period': day_period,
-              'hum': hum,
-              'is_rush_hour': is_rush_hour,
-              'is_weekend': is_weekend,
-              'max_daily_temp': max_daily_temp,
-              'mean_daily_hum': mean_daily_hum,
-              'mean_daily_temp': mean_daily_temp,
-              'min_daily_hum': min_daily_hum,
-              'min_daily_temp': min_daily_temp,
-              'season': season,
-              'temp': temp,
-              'weather_factor': weather_factor,
-              'weathersit': weathersit,
-              'yr': yr
-        }, index = [0])
+    input_x_test = pd.DataFrame([[atemp,
+                                 cos_hour, 
+                                 cos_month, 
+                                 cos_weekday,
+                                 day_period,
+                                 hum,
+                                 is_night,
+                                 is_rush_hour,
+                                 is_weekend,
+                                 max_daily_hum,
+                                 max_daily_temp,
+                                 mean_daily_hum,
+                                 mean_daily_temp,
+                                 min_daily_hum,
+                                 min_daily_temp,
+                                 season,
+                                 temp,
+                                 weather_factor,
+                                 weathersit,
+                                 windspeed,
+                                 yr]], columns=['atemp', 'cos_hour', 'cos_month', 'cos_weekday',
+       'day_period', 'hum', 'is_night', 'is_rush_hour', 'is_weekend', 'max_daily_hum',
+       'max_daily_temp', 'mean_daily_hum', 'mean_daily_temp', 'min_daily_hum',
+       'min_daily_temp', 'season', 'temp', 'weather_factor', 'weathersit',
+       'windspeed', 'yr'])
+    
+    #st.write(input_x_test)
 
+    
     # import preprocessed training and testing datasets
-    X_train, y_train, X_test, y_test, X_train_processed, X_test_processed, test_dates = preprocess()
+    X_train, y_train, X_test, y_test, X_train_processed, X_test_processed, train_dates, test_dates = preprocess()
 
     # train model on x_train and y_train and predict using user inputs 
     metrics_gb, prediction_from_input, feature_importance, sorted_idx, estimators, feature_names = gb_model(X_train, y_train, input_x_test, [0])

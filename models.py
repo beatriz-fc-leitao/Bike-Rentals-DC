@@ -99,7 +99,6 @@ def preprocess():
     num_feat = ["temp", 
                 "atemp", 
                 "hum", 
-                "windspeed", 
                 "cos_month", 
                 "cos_hour",
                 "cos_weekday",
@@ -108,9 +107,7 @@ def preprocess():
                 "max_daily_temp",
                 "mean_daily_temp",
                 "min_daily_hum",
-                "max_daily_hum",
-                "mean_daily_hum",
-                #"cos_day"
+                "mean_daily_hum"
                ]
 
     cat_feat = [ "season", 
@@ -118,8 +115,7 @@ def preprocess():
                 "is_weekend",
                 "day_period",
                 "weathersit",
-                "is_rush_hour",
-                "is_night"
+                "is_rush_hour"           
                ]
 
     target_feat = ["cnt"]
@@ -132,8 +128,8 @@ def preprocess():
     dates = data[["datetime"]]
 
     ##### train test split
-    training_proportion = 0.8
-
+    training_proportion = 0.9
+    
     maximum_training_row = int(len(data) * training_proportion)
 
     # create the first dataset with the first 80% of the rows
@@ -143,6 +139,10 @@ def preprocess():
     # create the second dataset with the last 20% of the rows
     X_test = x_df.iloc[maximum_training_row:,:]
     y_test = y_df.iloc[maximum_training_row:,:].squeeze()
+    
+    # create x and y dates
+    train_dates = dates.iloc[:maximum_training_row,:]
+    test_dates = dates.iloc[maximum_training_row:,:]
     
     # create x and y dates
     train_dates = dates.iloc[:maximum_training_row,:]
@@ -170,7 +170,7 @@ def preprocess():
     X_train_processed = pd.DataFrame(X_train_processed, columns=num_col_names + list(cat_col_names))
     X_test_processed = pd.DataFrame(X_test_processed, columns=num_col_names + list(cat_col_names))
     
-    return X_train, y_train, X_test, y_test, X_train_processed, X_test_processed, train_dates, test_dates
+    return X_train, y_train, X_test, y_test, X_train_processed, X_test_processed, test_dates
 
 
 # Function that takes in X_train_processed, y_train, X_test_processed and  y_test and returns a dataframe of performance metrics on train and test and the predictions on the test set from a linear regression model
@@ -345,7 +345,7 @@ def gb_model(X_train, y_train, X_test, y_test):
     max_features = None, 
     min_samples_leaf = 1, 
     min_samples_split = 7,
-    ccp_alpha = 2,
+    alpha = 0.1,
     n_estimators = 150)
 
     gb_model.fit(X_train, y_train)
