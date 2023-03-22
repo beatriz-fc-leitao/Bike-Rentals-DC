@@ -19,7 +19,7 @@ from sklearn.tree import plot_tree
 
 
 st.set_page_config(page_title="Bike Sharing: Washington DC", layout="wide", page_icon=":bike:")
-st.markdown("<h1 style='text-align: center;'>Bike Sharing: Washington DC</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center;'>&#x1F6B2 Bike Sharing: Washington DC &#x1F6B2</h1>", unsafe_allow_html=True)
 
 st.image("https://s3.ca-central-1.amazonaws.com/ehq-production-canada/redactor_assets/assets/4bddbb00662f81e2f2b671ec78db406f2ec85019/000/015/250/original/12_2019_Enviro_BikeShare_GetInvolved_Banner.jpg?1575667577", use_column_width=True)
 
