@@ -950,11 +950,11 @@ def partv_page():
 
 #Define a dictionary with the page names and their respective functions
 pages = {
-    "Part I: Introduction": parti_page,
-    "Part II: Basic Exploratory Analysis": partii_page,
-    "Part III: Customer Behavior Analysis": partiii_page,
-    "Part IV: Model Building": partiv_page,
-    "Part V: Model Predictions": partv_page
+    "📝 Part I: Introduction": parti_page,
+    "🔍 Part II: Basic Exploratory Analysis": partii_page,
+    "👥 Part III: Customer Behavior Analysis": partiii_page,
+    "🚀 Part IV: Model Building": partiv_page,
+    "📊 Part V: Model Predictions": partv_page
 }
 
 # Add a sidebar menu to select the page
@@ -963,16 +963,3 @@ selected_page = st.sidebar.radio("Table of Contents", list(pages.keys()))
 # Display the selected page
 pages[selected_page]()
 
-# if __name__ == "__main__":
-
-#     # This is to configure some aspects of the app
-#     st.set_page_config(
-#         layout="wide", page_title="Madrid Mobility Dashboard", page_icon=":car:"
-#     )
-
-#     # Write titles in the main frame and the side bar
-#     st.title("Madrid Mobility Dashboard")
-#     st.sidebar.title("Options")
-
-#     # Call main function
-#     main()
