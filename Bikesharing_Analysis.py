@@ -936,15 +936,19 @@ def partv_page():
 
     # train model on x_train and y_train and predict using user inputs 
     metrics_gb, prediction_from_input, feature_importance, sorted_idx, estimators, feature_names = gb_model(X_train, y_train, input_x_test, [0])
-    # display prediction
-    st.markdown("<h3 style='text-align: left;'>Predicted Numer of Bike Rentals:</h3>", unsafe_allow_html=True)
+    
+# display prediction
     
     if prediction_from_input < 0:
         final_prediction = 0
     else:
         final_prediction = prediction_from_input.astype(int)
-    
-    st.metric("", final_prediction)
+            
+    st.markdown("""
+    <div style='border: 0px solid black; padding: 10px'>
+        <h3 style='text-align: center;'>Predicted Number of Bike Rentals</h3>
+        <div style='text-align: center; font-size: 80px;'>{}</div>
+    </div>""".format(int(final_prediction)), unsafe_allow_html=True)  
 
  ##############################
 
