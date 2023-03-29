@@ -1,6 +1,4 @@
 # 🚲 Bike Rentals Washington DC
-Hi 👋
-
 In this project, you will find an interactive analysis of the Washington DC Bike Rental service. 
 
 The analysis was conducted in Python.
