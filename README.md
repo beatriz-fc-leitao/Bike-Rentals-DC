@@ -1,6 +1,4 @@
-# Bike-Rentals-DC
-Hi 👋
-
+# 🚲 Bike Rentals Washington DC
 In this project, you will find an interactive analysis of the Washington DC Bike Rental service. 
 
 The analysis was conducted in Python.
@@ -16,4 +14,4 @@ The project includes:
 - 🚀 Part IV: Model Building
 - 📊 Part V: Model Predictions
 
-**Click here to see the final procut:** https://beatriz-fc-leitao-bike-rentals-dc-bikesharing-analysis-j9tw07.streamlit.app/
+**Click here to see the final product:** https://beatriz-fc-leitao-bike-rentals-dc-bikesharing-analysis-j9tw07.streamlit.app/
